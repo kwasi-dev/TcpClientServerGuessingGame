@@ -12,6 +12,12 @@ while 1:
     
     while 1:
         clientMessageBytes = connectionSocket.recv(1024)
+
+        if not clientMessageBytes:
+           print("Client disconnected")
+           break
+        
+
         clientMessageStr = clientMessageBytes.decode()
         serverResponse = ""
         
