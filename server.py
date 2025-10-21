@@ -1,17 +1,26 @@
 from socket import socket, AF_INET,SOCK_STREAM
 import random 
+import threading
 
 serverPort = 12009
 serverSocket = socket(AF_INET,SOCK_STREAM)
 serverSocket.bind(("",serverPort))
-serverSocket.listen(1)
+serverSocket.listen()
+
 print ("The Server is running ... ")
-secretNumber = random.randint(1,100)
-while 1:
-    connectionSocket, addr = serverSocket.accept()
-    
+
+
+def handle_client(connectionSocket, addr):
+    print(f"Thread started to handle client {addr}")
+    secretNumber = random.randint(1,100)
+
     while 1:
         clientMessageBytes = connectionSocket.recv(1024)
+
+        if not clientMessageBytes:
+           print("Client disconnected")
+           break
+
         clientMessageStr = clientMessageBytes.decode()
         serverResponse = ""
         
@@ -34,3 +43,10 @@ while 1:
         except Exception as e:
            print("Client disconnected")
            break
+
+
+while True:
+    connectionSocket, addr = serverSocket.accept()
+    
+    thread_handler = threading.Thread(target=handle_client, args=(connectionSocket, addr))
+    thread_handler.start() 
