@@ -20,8 +20,10 @@ thread_handler = threading.Thread(target=handle_server_messages, args=(clientSoc
 thread_handler.start() 
  
 while 1:
-    numStr = input(f"(Input: ")
+    msg = input(f"(Input (q to quit): ")
+    if msg == "q":
+        break
 
-    clientSocket.send(bytes(numStr, "utf-8"))
+    clientSocket.send(bytes(msg, "utf-8"))
 
 clientSocket.close()
